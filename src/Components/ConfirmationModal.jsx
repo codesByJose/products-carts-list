@@ -1,9 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
+import React from "react";
+
 import { DessertContext } from "./DessertContext";
-import confirmImg from '../../assets/images/icon-order-confirmed.svg';
+import confirmImg from '../../public/assets/images/icon-order-confirmed.svg';
 import { Box, Text, Img, Divider, Button } from "@chakra-ui/react";
 
-const ConfirmationModal = ({ count, setShowModal, }) => {
+const ConfirmationModal = ({ count, setShowModal, setShowItems, setCount }) => {
     const { dessert } = useContext(DessertContext);
     const addedItems = dessert.filter((item) => count[item.name] > 0);
 
@@ -11,6 +13,8 @@ const ConfirmationModal = ({ count, setShowModal, }) => {
 
     const handleModal = () => {
         setShowModal(false);
+        setShowItems(dessert.reduce((acc, item) => ({ ...acc, [item.name]: true }), {}));
+        setCount({});
     }
 
     return (
@@ -25,6 +29,7 @@ const ConfirmationModal = ({ count, setShowModal, }) => {
             alignItems="center"
             bg="rgba(0, 0, 0, 0.5)"
             zIndex="1000"
+            overflow="auto"
         >
             <Box
                 bg="white"
@@ -33,19 +38,20 @@ const ConfirmationModal = ({ count, setShowModal, }) => {
                 boxShadow="lg"
                 width="90%"
                 maxWidth="500px"
+                overflow="auto"
             >
                 <Box>
                     <Img src={confirmImg} alt="Order Confirmed" />
                     <Text fontSize={"2.5em"} fontWeight={700} color={"hsl(14, 65%, 9%)"} mt={4}>Order Confirmed</Text>
                     <Text color={"hsl(12, 20%, 44%)"}>We hope you enjoy your food!</Text>
-                    <Box bg={" hsl(13, 31%, 94%)"} p={6} mt={4}>
+                    <Box bg={" hsl(13, 31%, 94%)"} p={6} mt={4} borderRadius={7}>
                         {addedItems.map((items) => (
-                            <>
-                                <Box key={items.name} display={"flex"} justifyContent={"space-between"} alignItems={"center"} pb={4}>
+                            <React.Fragment key={items.name}>
+                                <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} pb={4}>
 
 
                                     <Box display={"flex"} alignItems={"center"}>
-                                        <Box pr={3}>
+                                        <Box >
                                             <Img src={items.image.thumbnail} alt={items.name} w={50} borderRadius={5} />
                                         </Box>
                                         <Box pl={2} >
@@ -65,7 +71,7 @@ const ConfirmationModal = ({ count, setShowModal, }) => {
 
                                 </Box>
                                 <Divider mb={3} />
-                            </>
+                            </React.Fragment>
 
                         ))}
                         <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
@@ -74,7 +80,7 @@ const ConfirmationModal = ({ count, setShowModal, }) => {
                         </Box>
                     </Box>
                 </Box>
-                <Button bg={"hsl(14, 86%, 42%)"} _hover={{bg: "hsl(14, 86%, 42%)" }} mt={5} w={"100%"} p={6} borderRadius={30} color={"white"} onClick={handleModal}>Start New Order</Button>
+                <Button bg={"hsl(14, 86%, 42%)"} _hover={{ bg: "hsl(14, 86%, 42%)" }} mt={5} w={"100%"} p={6} borderRadius={30} color={"white"} onClick={handleModal}>Start New Order</Button>
             </Box>
 
         </Box>

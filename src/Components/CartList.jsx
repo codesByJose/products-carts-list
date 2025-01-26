@@ -1,16 +1,16 @@
 import { useContext, useState } from "react";
 import React from "react";
 import { DessertContext } from "./DessertContext";
-import emptyCart from '../../assets/images/illustration-empty-cart.svg';
 import { Box, Button, Divider, Img, Text } from '@chakra-ui/react';
-import removeImg from '../../assets/images/icon-remove-item.svg';
-import carbonImg from '../../assets/images/icon-carbon-neutral.svg';
+import removeImg from '../../public/assets/images/icon-remove-item.svg';
+import carbonImg from '../../public/assets/images/icon-carbon-neutral.svg';
 import ConfirmationModal from "./ConfirmationModal";
+import emptyCart from '../../public/assets/images/illustration-empty-cart.svg';
 
-const CartList = ({ count, setCount, addedItems }) => {
+const CartList = ({ count, setCount, addedItems, setShowItems }) => {
     const { dessert } = useContext(DessertContext);
-     addedItems = dessert.filter((item) => count[item.name] > 0);
-     const [showModal, setShowModal] = useState(false);
+    addedItems = dessert.filter((item) => count[item.name] > 0);
+    const [showModal, setShowModal] = useState(false);
     // total
 
     const totalCount = Object.values(count).reduce((acc, curr) => acc + curr, 0);
@@ -65,9 +65,9 @@ const CartList = ({ count, setCount, addedItems }) => {
                                     </Box>
                                 </Box>
                                 <Box display={"flex"} alignItems={"center"} justifyContent={"center"}  >
-                                    <Img src={removeImg} p={1} borderRadius={"50%"} color={"hsl(12, 20%, 44%)"} 
-                                    border={"1px solid hsl(12, 20%, 44%)"} w={5} h={5} _hover={{border: "1px solid hsl(14, 65%, 9%)", color: " hsl(14, 65%, 9%)", cursor: "pointer"}}
-                                    onClick={() => handleDelete(items.name)} />
+                                    <Img src={removeImg} p={1} borderRadius={"50%"} color={"hsl(12, 20%, 44%)"}
+                                        border={"1px solid hsl(12, 20%, 44%)"} w={5} h={5} _hover={{ border: "1px solid hsl(14, 65%, 9%)", color: " hsl(14, 65%, 9%)", cursor: "pointer" }}
+                                        onClick={() => handleDelete(items.name)} />
                                 </Box>
                             </Box>
                             <Divider mt={3} mb={3} borderColor="gray.200" />
@@ -103,16 +103,16 @@ const CartList = ({ count, setCount, addedItems }) => {
                         </Text>
                     </Box>
                     <Button mt={7} color={"white"} bg={"hsl(14, 86%, 42%)"} borderRadius={50} p={6}
-                    _hover={{bg:  "hsl(14, 80.70%, 32.50%)"}} onClick={handleShowModal}>Confirm Order</Button>
+                        _hover={{ bg: "hsl(14, 80.70%, 32.50%)" }} onClick={handleShowModal}>Confirm Order</Button>
 
                 </>
 
             )}
-            
-          
-      {showModal && (
-        <ConfirmationModal count={count} setShowModal={setShowModal} />
-      )}
+
+
+            {showModal && (
+                <ConfirmationModal count={count} setShowModal={setShowModal} setShowItems={setShowItems} setCount={setCount} />
+            )}
         </Box>
     );
 };

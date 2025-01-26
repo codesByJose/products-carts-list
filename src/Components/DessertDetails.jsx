@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import { DessertContext } from "./DessertContext";
 import { Box, Button, Img, Text } from "@chakra-ui/react";
-import cartImage from "../../assets/images/icon-add-to-cart.svg"
-import increment from "../../assets/images/icon-increment-quantity.svg"
-import decrement from "../../assets/images/icon-decrement-quantity.svg"
+import cartImage from "../../public/assets/images/icon-add-to-cart.svg"
+import increment from "../../public/assets/images/icon-increment-quantity.svg"
+import decrement from "../../public/assets/images/icon-decrement-quantity.svg"
 import CartList from "./CartList";
 
 
@@ -14,12 +14,17 @@ import CartList from "./CartList";
 const DessertDetails = () => {
   const { dessert } = useContext(DessertContext);
   const [count, setCount] = useState({});
-  const [showItems, setShowItems] = useState(dessert.reduce((acc, item) => ({ ...acc, [item.name]: true }), {})
-  );
+  const [showItems, setShowItems] = useState(dessert.reduce((acc, item) => ({ ...acc, [item.name]: true }), {}));
+
 
   const handleAddToCart = (itemName) => {
-    setShowItems((prevShowItems) => ({ ...prevShowItems, [itemName]: false }))
-  }
+    setShowItems((prevShowItems) => {
+      return dessert.reduce((acc, item) => {
+        acc[item.name] = item.name !== itemName;
+        return acc;
+      }, {});
+    });
+  };
   const handleIncrement = (itemName) => {
     setCount((prevCount) => ({ ...prevCount, [itemName]: (prevCount[itemName] || 0) + 1 }))
   }
@@ -29,18 +34,18 @@ const DessertDetails = () => {
 
 
   return (
-    <Box w={"100%"} display={{base:"column", md:"flex", sm:"column"}} >
+    <Box w={"100%"} display={{ base: "column", md: "flex", sm: "column" }} >
 
       <Box flexBasis={"60%"}  >
         <Text fontSize={"3em"} pb={4} fontWeight={700} color={"hsl(14, 65%, 9%)"}>Dessert</Text>
-        <Box w={"100%"} display={"grid"} gridTemplateColumns={{base: "repeat(1, 1fr)", md : "repeat(3, 1fr)", sm : "repeat(2, 1fr)"}} gridGap={2} >
+        <Box w={"100%"} display={"grid"} gridTemplateColumns={{ base: "repeat(1, 1fr)", md: "repeat(3, 1fr)", sm: "repeat(2, 1fr)" }} gridGap={2} >
           {dessert.map((items) => {
             return (
               <Box key={items.name} >
-                <Box display="flex" flexDirection={"column"} position={"relative"} w={300} borderRadius={10} >
-                  <Img src={items.image.desktop} alt={items.name} w={{base : "100%", md :250, sm: "250"}} borderRadius={10} _hover={{ border: "2px solid hsl(14, 86%, 42%)", transition: "8s ease out" }} />
+                <Box key={items.name} display="flex" flexDirection={"column"} position={"relative"} w={300} borderRadius={10} >
+                  <Img src={items.image.desktop} alt={items.name} w={{ base: "100%", md: 250, sm: "250" }} borderRadius={10} _hover={{ border: "2px solid hsl(14, 86%, 42%)", transition: "8s ease out" }} />
                   {showItems[items.name] ? (
-                    <Button position={"absolute"} bottom={"-14%"} left={{base: "50%", md : "50", sm : "50"}} transform="translate(-50%, -50%)" border="1.5px solid hsl(7, 20%, 60%)"
+                    <Button position={"absolute"} bottom={"-14%"} left={{ base: "50%", md: "42%", sm: "50%" }} transform="translate(-50%, -50%)" border="1.5px solid hsl(7, 20%, 60%)"
                       zIndex={1} borderRadius={50} bg={"hsl(20, 50%, 98%)"} _hover={{ color: "hsl(14, 86%, 42%)", bg: " white", border: "1px solid hsl(14, 86%, 42%)" }}
                       fontSize={15} _focus={{ color: "hsl(14, 86%, 42%)" }}
                       onClick={() => handleAddToCart(items.name)} >
@@ -48,7 +53,7 @@ const DessertDetails = () => {
                       Add to cart
                     </Button>
                   ) : (
-                    <Box display={"flex"} alignItems={"center"} justifyContent={"center"} position={"absolute"} bottom={"-19%"} left={{base: "50%", md : "50", sm : "50"}} transform="translate(-50%, -50%)" border="1.5px solid hsl(7, 20%, 60%)"
+                    <Box display={"flex"} alignItems={"center"} justifyContent={"center"} position={"absolute"} bottom={"-19%"} left={{ base: "50%", md: "42%", sm: "50%" }} transform="translate(-50%, -50%)" border="1.5px solid hsl(7, 20%, 60%)"
                       zIndex={1} borderRadius={50} bg={"hsl(14, 86%, 42%)"} fontSize={15}   >
                       <Button bg={"none"} _hover={{ bg: "transparent" }} onClick={() => handleIncrement(items.name)}>
                         <Img src={increment} alt="cart" borderRadius={"50%"} border={"2px solid white"} width="20px" height="20px" p={1} m={1} _hover={{ color: "hsl(14, 86%, 42%)" }} />
@@ -75,7 +80,7 @@ const DessertDetails = () => {
         </Box>
       </Box>
       <Box flexBasis={"40%"} >
-        <CartList count={count} setCount={setCount} />
+        <CartList count={count} setCount={setCount} setShowItems={setShowItems} />
       </Box>
     </Box>
   )
